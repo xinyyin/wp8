@@ -100,8 +100,6 @@ const Splash: React.FC = () => {
       <div className="hero">
         <div className="logo">
           {/* Consider local images in public or src/assets */}
-          <img id="tv" src="/tv.jpeg" alt="TV" /> {/* Assuming tv.jpeg is in public folder */}
-          <img id="popcorn" src="/popcorn.png" alt="Popcorn" /> {/* Assuming popcorn.png is in public folder */}
         </div>
         <h1>Watch Party</h1>
         <h2>4</h2>

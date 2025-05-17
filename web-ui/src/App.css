@@ -1,6 +1,300 @@
+/* web-ui/src/App.css */
+
+/* Link fonts in your web-ui/public/index.html:
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+*/
+
+body {
+  background-color: #333366;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; /* Modern font stack */
+  color: #333; /* Default text color for content on light backgrounds */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* General container for page content */
+.page-container {
+  width: 900px; /* From old .container, can be responsive with max-width */
+  max-width: 100%; /* Ensure it doesn't overflow on small screens */
+  margin: 0 auto; /* Center the page content container */
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.15); /* Softer shadow */
+  padding: 0px; /* Remove default padding, components will add their own */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Default button styles */
+button, .button-link { /* .button-link for <a> styled as button */
+  color: white;
+  text-shadow: -1px -1px 1px rgba(0,0,0,0.2); /* Softer shadow */
+  font-family: inherit; /* Inherit from body or component */
+  background-color: orange;
+  padding: 10px 18px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none; /* For .button-link */
+  display: inline-block; /* For .button-link */
+  font-size: 1em;
+  transition: transform 200ms, background-color 200ms, box-shadow 200ms;
+}
+
+button:hover, .button-link:hover {
+  transform: translateY(-1px) scale(1.02); /* Subtle lift and scale */
+  background-color: darkorange;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+button:focus, button:focus-visible,
+.button-link:focus, .button-link:focus-visible {
+  outline: 2px solid dodgerblue;
+  outline-offset: 2px;
+}
+
+/* Common Header Structure (used by components) */
+.app-header-common {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  align-items: center;
+  background-color: white; /* Match page-container or specific design */
+  color: gray;
+  position: relative; /* For h4 */
+  z-index: 10; /* Ensure header is above page content */
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* Tailwind-ish shadow */
+  padding: 0 20px; /* Consistent padding */
+  min-height: 60px; /* Minimum header height */
+}
+
+.app-header-common .header-title-area {
+    display: flex;
+    align-items: center;
+    position: relative; /* For the '4' */
+}
+
+.app-header-common h2 {
+  font-size: 28px; /* Slightly adjusted */
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7), 2px 2px 1px orange, -2px -1px 1px blue;
+  padding: 8px 10px 8px 0; /* Adjusted padding */
+  margin: 0;
+}
+.app-header-common h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-header-common .header-version-badge { /* The "4" */
+  font-family: "Rowdies", cursive; /* Ensure it uses the font */
+  position: absolute;
+  left: calc(100% + 5px); /* Position relative to the h2 text end */
+  top: -25px; /* Adjust for overlap */
+  font-size: 70px; /* Adjusted size */
+  color: white;
+  text-shadow: 0 0 3px red;
+  z-index: -1; /* Behind h2 slightly */
+  line-height: 1;
+  padding-left: 5px; /* Space from title */
+}
+
+.app-header-common .room-details-header { /* For room name in header */
+    flex-grow: 1;
+    text-align: center;
+    font-size: 0.9em;
+    color: #555;
+    padding: 0 15px;
+}
+.app-header-common .room-details-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: normal;
+}
+.app-header-common .room-details-header strong {
+    font-weight: bold;
+    color: #333;
+}
+
+
+/* Login/Profile Link Area in Header */
+.login-profile-header {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Pushes it to the right */
+}
+
+.login-profile-header .loggedOut-link-container a,
+.login-profile-header .loggedIn-area .username-display,
+.login-profile-header .loggedIn-area .logout-button {
+  font-size: 0.95em;
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 200ms;
+}
+
+.login-profile-header .loggedOut-link-container a {
+  background-color: #f0ad4e; /* Bootstrap warning yellow */
+}
+.login-profile-header .loggedOut-link-container a:hover {
+  background-color: #ec971f;
+}
+
+.login-profile-header .loggedIn-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #5cb85c; /* Bootstrap success green */
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+.login-profile-header .loggedIn-area .username-display {
+  font-weight: bold;
+  padding: 0; /* No extra padding if inside the green box */
+  background-color: transparent;
+}
+.login-profile-header .loggedIn-area .username-display:hover {
+  text-decoration: underline;
+}
+
+.login-profile-header .loggedIn-area .logout-button {
+  background-color: #d9534f; /* Bootstrap danger red */
+  padding: 6px 10px;
+  font-size: 0.9em;
+  text-shadow: none;
+}
+.login-profile-header .loggedIn-area .logout-button:hover {
+  background-color: #c9302c;
+}
+
+/* General Aligned Form styles */
+.alignedForm {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Label, then input/controls */
+  gap: 10px 15px; /* Row gap, Column gap */
+  align-items: baseline; /* Align baselines of labels and inputs */
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.alignedForm label {
+  text-align: right;
+  font-weight: 500;
+}
+.alignedForm input[type="text"],
+.alignedForm input[type="password"],
+.alignedForm textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.alignedForm input:focus,
+.alignedForm textarea:focus {
+  border-color: dodgerblue;
+  box-shadow: 0 0 0 2px rgba(30,144,255,0.2);
+  outline: none;
+}
+.alignedForm .form-actions { /* For submit buttons etc. that span columns */
+    grid-column: 1 / -1; /* Span all columns */
+    justify-self: start; /* Or center, end as needed */
+    margin-top: 10px;
+}
+
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.25rem;
+  text-align: left;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #c3e6cb;
+  border-radius: 0.25rem;
+  text-align: left;
+}
+
+/* Material Symbols styling */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24; /* Default settings */
+  vertical-align: middle;
+  font-size: 1.2em; /* Relative to parent font size */
+}
+.material-symbols-outlined.md-18 {
+  font-size: 18px !important; /* Override for specific size */
+  /* You might need to adjust opsz if explicitly setting font-size for optimal rendering */
+}
+
+/* Responsive considerations (Example) */
+@media (max-width: 900px) {
+  .page-container {
+    width: 100%;
+    padding: 0 15px 15px 15px; /* Adjust padding for smaller screens */
+  }
+  .app-header-common {
+    padding: 0 15px;
+  }
+  .app-header-common h2 {
+    font-size: 24px;
+  }
+  .app-header-common .header-version-badge {
+    font-size: 60px;
+    top: -20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .alignedForm {
+    grid-template-columns: 1fr; /* Stack label and input */
+  }
+  .alignedForm label {
+    text-align: left;
+    margin-bottom: 2px;
+  }
+  .app-header-common {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 10px;
+  }
+  .app-header-common .room-details-header {
+    text-align: left;
+    width: 100%;
+    padding: 5px 0;
+  }
+  .login-profile-header {
+    width: 100%;
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
 }

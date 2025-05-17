@@ -17,7 +17,6 @@
     padding: 0 30px;
     background-color: white;
     color: gray;
-    font-family: "Rowdies", cursive;
     position: relative;
     z-index: 2;
     box-shadow: 0 10px 8px darkslateblue;
@@ -208,7 +207,6 @@
   }
   .comment_box label {
     display: block;
-    font-family: "Rowdies", cursive;
     margin-bottom: 5px;
     font-size: 1.1em;
   }
@@ -248,7 +246,6 @@
       align-items: center;
   }
   .noMessages h2, .noMessages-in-room h2 {
-      font-family: "Rowdies", cursive;
       margin-bottom: 10px;
   }
   .noMessages a {

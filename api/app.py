@@ -7,13 +7,11 @@ from flask import Flask, g, request, jsonify, send_from_directory, current_app
 from functools import wraps
 from flask_cors import CORS 
 
-
 app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
-app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}) 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['DATABASE'] = 'db/watchparty.sqlite3'
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -260,23 +258,29 @@ def api_update_room_name(room_id):
 @require_api_key 
 def api_get_room_messages(room_id):
     query = """
-    SELECT m.id, m.body, u.name as author, m.user_id, m.room_id
+    SELECT m.id, m.body, u.name AS author, m.user_id, m.room_id
     FROM messages m
-    JOIN users u ON m.user_id = u.id
+    LEFT JOIN users u ON m.user_id = u.id
     WHERE m.room_id = ?
     ORDER BY m.id ASC;
     """
     messages = query_db(query, [room_id])
 
     if messages is not None:
-        messages_list = [dict(msg) for msg in messages]
+        messages_list = []
+        for msg in messages:
+            msg_dict = dict(msg)
+            if msg_dict.get("author") is None:
+                msg_dict["author"] = f"User ID: {msg_dict['user_id']}"
+            messages_list.append(msg_dict)
         return jsonify(messages_list), 200
     else:
         check_empty = query_db('SELECT count(*) as count FROM messages WHERE room_id = ?', [room_id], one=True)
         if check_empty and check_empty['count'] == 0:
-             return jsonify([]), 200 
+            return jsonify([]), 200 
         else:
             return jsonify({"success": False, "message": "Failed to retrieve messages"}), 500
+
 
 @app.route('/api/rooms/<int:room_id>/messages', methods=['POST']) # Changed path
 @require_api_key 
@@ -302,7 +306,7 @@ def api_post_room_message(room_id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3500, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 

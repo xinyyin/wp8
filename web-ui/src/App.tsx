@@ -1,106 +1,137 @@
 // web-ui/src/App.tsx
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import './App.css'; // Your global styles
+import { useState, useEffect, useCallback } from 'react'; // Added useCallback
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'; // Removed useNavigate from here as it's used in components
+import './App.css';
 import Splash from './components/Splash/Splash';
 import Profile from './components/Profile/Profile';
 import Login from './components/Login/Login';
-import RoomComponent from './components/Room/Room'; // Renamed to avoid conflict
-import { User } from './types';
+import RoomComponent from './components/Room/Room';
+import { User } from './types'; // Make sure types.ts exists and is correctly imported
 
-const API_BASE_URL = 'http://localhost:5000/api'; // Flask API URL
+export const API_BASE_URL = 'http://localhost:5050/api';
+ // Ensure this matches your Flask port
+
+// Define the type for the context passed via Outlet
+export interface AppOutletContextType {
+    currentUser: User | null;
+    apiKey: string | null;
+    username: string | null;
+    userId: string | null;
+    handleLogout: () => void;
+    API_BASE_URL: string;
+    intendedPath: string | null;
+    setIntendedPath: React.Dispatch<React.SetStateAction<string | null>>;
+    updateGlobalUsername: (newName: string) => void; // For Profile to update App's state
+}
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem('apiKey'));
-  const [username, setUsername] = useState<string | null>(localStorage.getItem('username'));
-  const [userId, setUserId] = useState<string | null>(localStorage.getItem('userId'));
-  const [isLoading, setIsLoading] = useState(true);
+  const [apiKey, setApiKey] = useState<string | null>(() => localStorage.getItem('apiKey'));
+  const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username'));
+  const [userId, setUserId] = useState<string | null>(() => localStorage.getItem('userId'));
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true); // Renamed for clarity
   const [intendedPath, setIntendedPath] = useState<string | null>(null);
 
+  const updateCurrentUserState = useCallback((name: string | null, id: string | null, key: string | null) => {
+    if (name && id && key) {
+        setCurrentUser({ id: parseInt(id, 10), name: name, api_key: key });
+        setUsername(name);
+        setUserId(id);
+        setApiKey(key);
+    } else {
+        setCurrentUser(null);
+        setUsername(null);
+        setUserId(null);
+        setApiKey(null);
+    }
+  }, []); // Empty dependency array as it doesn't depend on App's scope variables directly
 
   useEffect(() => {
     const storedApiKey = localStorage.getItem('apiKey');
     const storedUsername = localStorage.getItem('username');
     const storedUserId = localStorage.getItem('userId');
     if (storedApiKey && storedUsername && storedUserId) {
-      setApiKey(storedApiKey);
-      setUsername(storedUsername);
-      setUserId(storedUserId);
-      setCurrentUser({ id: parseInt(storedUserId, 10), name: storedUsername, api_key: storedApiKey });
+      updateCurrentUserState(storedUsername, storedUserId, storedApiKey);
     }
-    setIsLoading(false);
-  }, []);
+    setIsLoadingAuth(false);
+  }, [updateCurrentUserState]); // updateCurrentUserState is now stable due to useCallback
 
-  const handleLogin = (user: User, key: string) => {
+  const handleLogin = (userFromApi: { user_name: string, user_id: number }, key: string) => { // Match ApiKeyResponse structure
     localStorage.setItem('apiKey', key);
-    localStorage.setItem('username', user.name);
-    localStorage.setItem('userId', user.id.toString());
-    setApiKey(key);
-    setUsername(user.name);
-    setUserId(user.id.toString());
-    setCurrentUser(user);
+    localStorage.setItem('username', userFromApi.user_name);
+    localStorage.setItem('userId', userFromApi.user_id.toString());
+    updateCurrentUserState(userFromApi.user_name, userFromApi.user_id.toString(), key);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('apiKey');
     localStorage.removeItem('username');
     localStorage.removeItem('userId');
-    setApiKey(null);
-    setUsername(null);
-    setUserId(null);
-    setCurrentUser(null);
-    // Navigate to login or home after logout
-    // This will be handled by ProtectedRoute redirecting to /login
+    updateCurrentUserState(null, null, null);
+    setIntendedPath(null); // Clear any stored intended path
+    // Navigation to /login will be handled by ProtectedRoute or Navigate component
   };
 
-  // This component will handle protected routes
+  const updateGlobalUsername = (newName: string) => {
+    localStorage.setItem('username', newName);
+    setUsername(newName); // Update username state in App
+    if(currentUser && apiKey && userId) { // Ensure other parts of currentUser are preserved
+        setCurrentUser({id: parseInt(userId), name: newName, api_key: apiKey});
+    }
+  };
+
+  const outletContextValue: AppOutletContextType = {
+    currentUser, apiKey, username, userId, handleLogout,
+    API_BASE_URL, intendedPath, setIntendedPath, updateGlobalUsername
+  };
+
   const ProtectedRoute = () => {
     const location = useLocation();
-    if (isLoading) {
-      return <div>Loading...</div>; // Or a proper loader
+    // const context = useOutletContext<AppOutletContextType>(); // Not strictly needed for setIntendedPath if it's from App's scope
+
+    useEffect(() => {
+      // This is the CORRECT place for this side-effect
+      if (!apiKey && location.pathname !== "/login") {
+          setIntendedPath(location.pathname + location.search + location.hash);
+      }
+  }, [apiKey, location, /*setIntendedPath*/]); 
+
+    if (isLoadingAuth) {
+      return <div>Loading authentication...</div>;
     }
-    if (!apiKey) {
-      // Store the current path to redirect after login
-      setIntendedPath(location.pathname + location.search + location.hash);
+
+    if (!apiKey) { 
       return <Navigate to="/login" replace />;
     }
-    // If logged in, render the child route
-    return <Outlet context={{ currentUser, apiKey, handleLogout, API_BASE_URL, intendedPath, setIntendedPath }} />;
+    return <Outlet context={outletContextValue} />;
   };
 
-  // This component will handle the login page, redirecting if already logged in
   const LoginPageWrapper = () => {
-    const navigate = useNavigate();
-    if (apiKey) {
-        // If there was an intended path, go there, otherwise to home
+    if (isLoadingAuth) return <div>Loading...</div>; 
+    if (apiKey && currentUser) { 
         const redirectTo = intendedPath || '/';
-        setIntendedPath(null); // Clear intended path
         return <Navigate to={redirectTo} replace />;
     }
     return <Login onLogin={handleLogin} apiBaseUrl={API_BASE_URL} intendedPath={intendedPath} setIntendedPath={setIntendedPath} />;
-  }
+  };
 
-
-  if (isLoading) {
-    return <div>Loading application...</div>; // Or a global spinner
+  if (isLoadingAuth) {
+    return <div>Application is loading...</div>; 
   }
 
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPageWrapper />} />
-
-        {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Splash />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/room/:roomId" element={<RoomComponent />} />
-          {/* Add other protected routes here */}
+          {/* Fallback for unknown protected routes, redirect to splash */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
-
-        {/* Fallback for unknown routes - consider a 404 component */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* General fallback if not authenticated and not on login (e.g. direct invalid URL) */}
+         {!apiKey && <Route path="*" element={<Navigate to="/login" replace />} />}
       </Routes>
     </Router>
   );

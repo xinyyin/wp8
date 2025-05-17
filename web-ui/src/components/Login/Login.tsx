@@ -5,7 +5,7 @@ import { User, ApiKeyResponse } from '../../types';
 import './Login.css'; // Create this CSS file
 
 interface LoginProps {
-  onLogin: (user: User, apiKey: string) => void;
+  onLogin: (userFromApi: { user_name: string, user_id: number }, apiKey: string) => void;
   apiBaseUrl: string;
   intendedPath: string | null;
   setIntendedPath: (path: string | null) => void;
@@ -29,7 +29,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, apiBaseUrl, intendedPath, setInt
       const data: ApiKeyResponse = await response.json();
       if (response.ok && data.success && data.api_key) {
         const user: User = { id: data.user_id, name: data.user_name, api_key: data.api_key };
-        onLogin(user, data.api_key);
+        onLogin({ user_name: data.user_name, user_id: data.user_id }, data.api_key);
         const redirectTo = intendedPath || '/';
         setIntendedPath(null); // Clear intended path
         navigate(redirectTo, { replace: true });
@@ -52,7 +52,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, apiBaseUrl, intendedPath, setInt
         const data: ApiKeyResponse = await response.json();
         if (response.ok && data.success && data.api_key) {
             const user: User = { id: data.user_id, name: data.user_name, api_key: data.api_key };
-            onLogin(user, data.api_key);
+            onLogin({ user_name: data.user_name, user_id: data.user_id }, data.api_key);
             const redirectTo = intendedPath || '/';
             setIntendedPath(null); // Clear intended path
             navigate(redirectTo, { replace: true });
@@ -98,7 +98,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, apiBaseUrl, intendedPath, setInt
           <div className="signup-section">
             <p>Don't have an account?</p>
             <button onClick={handleSignup} className="create-account-button">
-              Create a new Account (One-Click Signup)
+              Create a new Account
             </button>
           </div>
         </div>
