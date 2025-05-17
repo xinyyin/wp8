@@ -1,0 +1,153 @@
+/* web-ui/src/components/Login/Login.css */
+/* Add styles specific to the Login page here */
+/* You can adapt styles from the .login section of your old style.css */
+
+.login-container {
+    /* Basic container styling */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Ensure it takes full viewport height */
+    background-color: #333366; /* From old body */
+  }
+  
+  .login-container .header { /* Copied from old style.css and adapted */
+    display: flex;
+    width: 900px; /* From old .container */
+    margin: auto;
+    padding: 0 30px;
+    background-color: white; /* From old .container */
+    color: gray;
+    font-family: "Rowdies", cursive;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 10px 8px darkslateblue;
+  }
+  
+  .login-container .header h2 {
+    position: relative;
+    z-index: 3;
+    font-size: 32px;
+    color: white;
+    text-shadow: 1px 1px 5px black, 3px 3px 2px orange, -3px -1px 2px blue;
+    font-family: "Rowdies", cursive;
+    padding: 10px;
+    display: block;
+    justify-content: start;
+  }
+  
+  .login-container .header h4 {
+    position: absolute;
+    left: 100px;
+    top: -1.4em;
+    z-index: 2;
+    font-size: 100px;
+    color: white;
+    text-shadow: 0 0 5px red;
+  }
+  
+  .login-container .clip {
+    width: 900px; /* From old .container */
+    margin: 0 auto; /* Center the white box */
+    background-color: white; /* From old .container */
+    box-shadow: 0 0 20px black; /* From old .container */
+    overflow: hidden;
+    flex-grow: 1; /* Allow it to take available space */
+    padding-bottom: 30px; /* Padding from old .container */
+  }
+  
+  .login-container .auth.container {
+    width: auto; /* Override fixed width from .container */
+    height: auto; /* Override fixed height */
+    box-shadow: none;
+    padding-top: 20px;
+    color: #333; /* Text color for light background */
+  }
+  
+  .login-container .auth.container h3 {
+    font-family: "Rowdies", cursive;
+    color: #555;
+  }
+  
+  .login-container .alignedForm {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto; /* Label, Input, Button */
+    gap: 10px;
+    align-items: center;
+    max-width: 400px;
+    margin: 20px auto;
+  }
+  
+  .login-container .alignedForm label {
+    padding: 4px;
+    margin: 6px;
+    text-align: right;
+  }
+  
+  .login-container .alignedForm input {
+    padding: 8px;
+    margin: 6px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    grid-column: 2 / 3;
+  }
+  
+  .login-container .alignedForm button {
+    padding: 8px 12px;
+    margin: 6px;
+    color: white;
+    text-shadow: -1px -1px 2px black;
+    font-family: sans-serif;
+    background-color: orange;
+    border-radius: 4px;
+    cursor: pointer;
+    grid-column: 3 / 4;
+    justify-self: start; /* Align button to the start of its grid cell */
+  }
+  
+  .login-container .alignedForm input[type="password"] {
+     grid-column: 2 / 4; /* Password input takes full width available to input + button */
+  }
+   /* Special case for login button to be next to username input */
+  .login-container .alignedForm.login label[for="login_username"] ~ button {
+      grid-row: 1; /* Ensure it's on the same row as username */
+  }
+  .login-container .alignedForm.login label[for="login_password"] + input {
+      grid-column: 2 / 4; /* Password field spans two columns */
+  }
+  
+  
+  .login-container .failed-message {
+    margin-top: 1em;
+    padding: 8px;
+    color: white;
+    border-radius: 5px;
+    background-color: lightcoral;
+    box-shadow: 0 0 5px 3px lightcoral;
+    text-align: center;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .login-container .signup-section {
+      margin-top: 2em;
+      text-align: center;
+  }
+  .login-container .signup-section p {
+      margin-bottom: 0.5em;
+  }
+  .login-container .create-account-button {
+    padding: 10px 15px;
+    font-size: 1em;
+    background-color: #5cb85c; /* A green color for signup */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .login-container .create-account-button:hover {
+    background-color: #4cae4c;
+  }
+  
+  /* Ensure global App.css styles for button hover/focus are either suitable or overridden */

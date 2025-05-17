@@ -1,0 +1,261 @@
+/* web-ui/src/components/Room/Room.css */
+/* Adapt styles from the .room section of your old style.css */
+
+.room-page-container {
+    display: flex;
+    flex-direction: column;
+    width: 900px; /* From old .container */
+    min-height: 100vh;
+    margin: auto;
+    background-color: white; /* From old .container */
+    box-shadow: 0 0 20px black; /* From old .container */
+    color: #333;
+  }
+  
+  .room-page-container .header {
+    display: flex;
+    padding: 0 30px;
+    background-color: white;
+    color: gray;
+    font-family: "Rowdies", cursive;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 10px 8px darkslateblue;
+    align-items: center;
+  }
+  .room-page-container .header h2 a {
+    color: white;
+    text-decoration: none;
+    text-shadow: 1px 1px 5px black, 3px 3px 2px orange, -3px -1px 2px blue;
+  }
+  .room-page-container .header h2 {
+    position: relative;
+    z-index: 3;
+    font-size: 32px;
+    padding: 10px;
+    margin-right: 20px;
+  }
+  .room-page-container .header h4 {
+    position: absolute;
+    left: 100px; /* Corresponds to h2 width approx */
+    top: -1.4em;
+    z-index: 2;
+    font-size: 100px;
+    color: white;
+    text-shadow: 0 0 5px red;
+  }
+  
+  .roomDetail {
+    flex-grow: 1; /* Takes available space between Watch Party title and login header */
+    align-self: flex-end;
+    padding-bottom: 10px; /* Align with bottom of h2 */
+    font-weight: 100;
+    font-size: 0.9em;
+    color: #555;
+  }
+  .roomDetail h3 {
+    font-weight: 100;
+    font-size: medium;
+    color: gray;
+    margin: 0 0 5px 0;
+  }
+  .roomDetail h3 strong {
+    margin-left: 0.5em;
+    font-weight: bold;
+    font-size: x-large;
+    color: #666;
+  }
+  .roomDetail .edit-icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 5px;
+      color: #777;
+  }
+  .roomDetail .edit-icon-button .material-symbols-outlined {
+      font-size: 18px;
+      vertical-align: middle;
+  }
+  .roomDetail .editRoomName input {
+    font-size: large; /* Match strong */
+    margin-left: 0.5em;
+    color: #666;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px;
+  }
+  .roomDetail .editRoomName button {
+    display: inline-block;
+    vertical-align: baseline;
+    margin-left: 5px;
+    padding: 4px 8px;
+    font-size: 0.9em;
+  }
+  .roomDetail > a { /* Invite link */
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: large;
+    color: hotpink;
+    text-decoration: none;
+  }
+  .roomDetail > a:hover {
+      text-decoration: underline;
+  }
+  
+  
+  .room-page-container .loginHeader {
+    display: flex;
+    z-index: 5;
+    margin-left: auto; /* Push to the right */
+  }
+  .room-page-container .loginHeader .loggedIn {
+    font-size: 18px;
+    color: white;
+    background-color: lightsalmon;
+    text-shadow: 0 0 2px brown;
+    padding: 10px 15px; /* Adjusted padding */
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    align-items: center;
+  }
+  .room-page-container .loginHeader .loggedIn a.welcomeBack {
+    color: white;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+  .room-page-container .logout-button-room {
+      background-color: lightcoral;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+  }
+  .room-page-container .logout-button-room:hover {
+      background-color: coral;
+  }
+  
+  
+  .room-page-container .clip {
+    overflow: hidden;
+    flex-grow: 1; /* Allows the chat area to fill vertical space */
+    display: flex; /* To make .container inside fill height */
+    width: 100%; /* Ensure clip takes full width of parent */
+  }
+  
+  .room-content-container { /* .container inside .clip */
+    padding: 20px 30px; /* Original padding for container */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px); /* Approximate header height, adjust as needed */
+    width: 100%; /* Ensure it fills .clip */
+    box-sizing: border-box;
+  }
+  
+  .chat {
+    display: flex; /* Changed from grid to flex for easier layout */
+    flex-direction: column;
+    flex-grow: 1; /* Chat area takes up available space */
+    height: 100%; /* Fill the .room-content-container */
+    overflow: hidden; /* Prevent content from breaking layout */
+  }
+  
+  .messages-area {
+    flex-grow: 1; /* Message area takes most of the space */
+    overflow-y: auto; /* Scroll for messages */
+    padding: 10px;
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+  }
+  
+  .message-entry { /* Replaces old 'message' element style */
+    display: flex; /* Use flex for author and content alignment */
+    padding: 8px 5px;
+    border-bottom: 1px solid lightgray;
+    align-items: flex-start; /* Align items to the top */
+  }
+  .message-entry:last-child {
+    border-bottom: none;
+  }
+  
+  .message-entry .author {
+    color: #c93;
+    font-weight: bold;
+    display: block;
+    min-width: 120px; /* Give author some space */
+    max-width: 150px;
+    padding-right: 10px;
+    word-break: break-word; /* Prevent long names from breaking layout */
+  }
+  
+  .message-entry .content {
+    display: block;
+    flex-grow: 1; /* Content takes remaining space */
+    word-break: break-word; /* Allow long messages to wrap */
+  }
+  
+  .comment_box {
+    padding-top: 10px;
+    border-top: 2px solid lightgray;
+  }
+  .comment_box form {
+      display: flex;
+      flex-direction: column;
+  }
+  .comment_box label {
+    display: block;
+    font-family: "Rowdies", cursive;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+  }
+  .comment_box textarea {
+    display: block;
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 60px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .comment_box button {
+    align-self: flex-start; /* Align button to the left */
+    border-radius: 5px;
+    padding: 10px 15px;
+    border: none;
+    background-color: orange;
+    color: white;
+    text-shadow: -1px -1px 2px black;
+    cursor: pointer;
+  }
+   .comment_box button:hover {
+      transform: scale(1.05);
+  }
+  
+  .noMessages, .noMessages-in-room { /* For when room is not found or no messages in an existing room */
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+  }
+  .noMessages h2, .noMessages-in-room h2 {
+      font-family: "Rowdies", cursive;
+      margin-bottom: 10px;
+  }
+  .noMessages a {
+      color: hotpink;
+      text-decoration: none;
+      font-weight: bold;
+  }
+  .noMessages a:hover {
+      text-decoration: underline;
+  }
